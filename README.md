@@ -1,4 +1,4 @@
-# challenge 5
+# Car Rest API
 simple car rest api with authentication and connect to database
 
 ### tech stack
