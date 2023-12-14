@@ -1,0 +1,1430 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Binar Challenge 05 - Cars",
+    "description": "this is simple crud car api that implemented authentication and return data from PosgreSQL database.\n\nrepo:\n- [binar challenge repo](https://github.com/hasyimashari/binar-challenge.git)",
+    "version": "1.0.0"
+  },
+  "externalDocs": {
+    "description": "Find out more about Swagger",
+    "url": "http://swagger.io"
+  },
+  "servers": [
+    {
+      "url": "http://127.0.0.1:3000"
+    }
+  ],
+  "tags": [
+    {
+      "name": "ping",
+      "description": "operation to check connection to server api"
+    },
+    {
+      "name": "user",
+      "description": "api opreation for user and auth"
+    },
+    {
+      "name": "cars",
+      "description": "api operations for car crud"
+    }
+  ],
+  "paths": {
+    "/api": {
+      "get": {
+        "tags": [
+          "ping"
+        ],
+        "summary": "ping to api server",
+        "description": "check connection to api server",
+        "operationId": "getPing",
+        "responses": {
+          "200": {
+            "description": "opreation success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "OK"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "ping succesfully"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/register": {
+      "post": {
+        "tags": [
+          "user"
+        ],
+        "summary": "register member",
+        "description": "register user with member role",
+        "operationId": "registerMember",
+        "requestBody": {
+          "description": "create new user",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "user1"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "user1@mail.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "example": "user111"
+                  },
+                  "phone": {
+                    "type": "string",
+                    "example": 85088088088
+                  },
+                  "addres": {
+                    "type": "string",
+                    "example": "kediri"
+                  }
+                },
+                "required": [
+                  "name",
+                  "email",
+                  "password",
+                  "phone",
+                  "addres"
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "operation success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "OK"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "create user success"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid",
+                          "example": "aa1e00f4-73c5-4e4f-93fc-ff7480704c1a"
+                        },
+                        "name": {
+                          "type": "string",
+                          "example": "user1"
+                        },
+                        "email": {
+                          "type": "string",
+                          "format": "email",
+                          "example": "user1@mail.com"
+                        },
+                        "encryptedPassword": {
+                          "type": "string",
+                          "example": "$2b$07$wZLHfx3g6wKWWL1GJXPt4.HqZSasIPj5m.0rj8iXyQY03kO2AKcFi"
+                        },
+                        "phone": {
+                          "type": "string",
+                          "example": 85088088088
+                        },
+                        "addres": {
+                          "type": "string",
+                          "example": "kediri"
+                        },
+                        "role": {
+                          "type": "string",
+                          "enum": [
+                            "member",
+                            "admin",
+                            "superadmin"
+                          ],
+                          "example": "member"
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "format": "date-time",
+                          "example": "2022-03-23T15:49:05.563Z"
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "format": "date-time",
+                          "nullable": true,
+                          "example": "2022-03-23T15:49:05.563Z"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "operation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API_respon"
+                },
+                "examples": {
+                  "null data": {
+                    "value": {
+                      "status": "FAIL",
+                      "message": "Failed to create new user : ${data} is required"
+                    }
+                  },
+                  "empty data": {
+                    "value": {
+                      "status": "FAIL",
+                      "message": "Failed to create new user : ${data} cant be empty"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "operation failed - same email",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API_respon"
+                },
+                "example": {
+                  "status": "FAIL",
+                  "message": "Failed to create new user : Validation error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/register": {
+      "post": {
+        "tags": [
+          "user"
+        ],
+        "summary": "register admin",
+        "description": "register user with admin role",
+        "operationId": "registerAdmin",
+        "requestBody": {
+          "description": "create new user",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "admin1"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "admin1@mail.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "example": "admin111"
+                  },
+                  "phone": {
+                    "type": "string",
+                    "example": 85088088088
+                  },
+                  "addres": {
+                    "type": "string",
+                    "example": "kediri"
+                  }
+                },
+                "required": [
+                  "name",
+                  "email",
+                  "password",
+                  "phone",
+                  "addres"
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "operation success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "OK"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "create user success"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid",
+                          "example": "aa1e00f4-73c5-4e4f-93fc-ff7480704c1a"
+                        },
+                        "name": {
+                          "type": "string",
+                          "example": "admin1"
+                        },
+                        "email": {
+                          "type": "string",
+                          "format": "email",
+                          "example": "admin1@mail.com"
+                        },
+                        "encryptedPassword": {
+                          "type": "string",
+                          "example": "$2b$07$wZLHfx3g6wKWWL1GJXPt4.HqZSasIPj5m.0rj8iXyQY03kO2AKcFi"
+                        },
+                        "phone": {
+                          "type": "string",
+                          "example": 85088088088
+                        },
+                        "addres": {
+                          "type": "string",
+                          "example": "kediri"
+                        },
+                        "role": {
+                          "type": "string",
+                          "enum": [
+                            "member",
+                            "admin",
+                            "superadmin"
+                          ],
+                          "example": "admin"
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "format": "date-time",
+                          "example": "2022-03-23T15:49:05.563Z"
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "format": "date-time",
+                          "nullable": true,
+                          "example": "2022-03-23T15:49:05.563Z"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "operation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API_respon"
+                },
+                "examples": {
+                  "null data": {
+                    "value": {
+                      "status": "FAIL",
+                      "message": "Failed to create new user : ${data} is required"
+                    }
+                  },
+                  "empty data": {
+                    "value": {
+                      "status": "FAIL",
+                      "message": "Failed to create new user : ${data} cant be empty"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "operation failed - unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API_respon"
+                },
+                "example": {
+                  "status": "FAIL",
+                  "message": "Failed to access: unauthorized"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "operation failed - forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API_respon"
+                },
+                "example": {
+                  "status": "FAIL",
+                  "message": "Failed to access: forbidden"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "operation failed - same email",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API_respon"
+                },
+                "example": {
+                  "status": "FAIL",
+                  "message": "Failed to create new user : Validation error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer_auth": []
+          }
+        ]
+      }
+    },
+    "/api/login": {
+      "post": {
+        "tags": [
+          "user"
+        ],
+        "summary": "login user",
+        "description": "as login user to get the token",
+        "operationId": "loginUser",
+        "requestBody": {
+          "description": "credentials for login",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "user1@mail.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "example": "user111"
+                  }
+                },
+                "required": [
+                  "email",
+                  "password"
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "operation success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "OK"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "get user data success"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/User_with_token"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "operation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API_respon"
+                },
+                "examples": {
+                  "null data": {
+                    "value": {
+                      "status": "FAIL",
+                      "message": "Failed to create new user : email and password is required"
+                    }
+                  },
+                  "user not found": {
+                    "value": {
+                      "status": "FAIL",
+                      "message": "Failed to create new user : user not found"
+                    }
+                  },
+                  "wrong password": {
+                    "value": {
+                      "status": "FAIL",
+                      "message": "Failed to create new user : wrong password"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/user": {
+      "get": {
+        "tags": [
+          "user"
+        ],
+        "summary": "get user data",
+        "description": "get user data from available token",
+        "operationId": "getUserData",
+        "responses": {
+          "200": {
+            "description": "operation success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "OK"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "get user data success"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/User_with_token"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "operation failed - unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API_respon"
+                },
+                "example": {
+                  "status": "FAIL",
+                  "message": "Failed to access: unauthorized"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer_auth": []
+          }
+        ]
+      }
+    },
+    "/api/cars": {
+      "get": {
+        "tags": [
+          "cars"
+        ],
+        "summary": "get cars",
+        "description": "get list of car",
+        "operationId": "getListCars",
+        "responses": {
+          "200": {
+            "description": "operation success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "OK"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "get user data success"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/List_cars_return"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "operation failed - unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API_respon"
+                },
+                "example": {
+                  "status": "FAIL",
+                  "message": "Failed to access: unauthorized"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer_auth": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "cars"
+        ],
+        "summary": "create car",
+        "description": "create new car item",
+        "operationId": "createCar",
+        "requestBody": {
+          "description": "data to create new car",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Car_input"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "operation success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Car_return"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "operation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API_respon"
+                },
+                "examples": {
+                  "null data": {
+                    "value": {
+                      "status": "FAIL",
+                      "message": "Failed to create new user : ${data} is required"
+                    }
+                  },
+                  "empty data": {
+                    "value": {
+                      "status": "FAIL",
+                      "message": "Failed to create new user : ${data} cant be empty"
+                    }
+                  },
+                  "wrong car type": {
+                    "value": {
+                      "status": "FAIL",
+                      "message": "Failed to created new car : car type must be either small, medium, or large"
+                    }
+                  },
+                  "not number data": {
+                    "value": {
+                      "status": "FAIL",
+                      "message": "Failed to created new car : ${data} can be only numbers"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "operation failed - unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API_respon"
+                },
+                "example": {
+                  "status": "FAIL",
+                  "message": "Failed to access: unauthorized"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "operation failed - forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API_respon"
+                },
+                "example": {
+                  "status": "FAIL",
+                  "message": "Failed to access: forbidden"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer_auth": []
+          }
+        ]
+      }
+    },
+    "/api/cars/{carId}": {
+      "get": {
+        "tags": [
+          "cars"
+        ],
+        "summary": "get car by id",
+        "description": "get detail data of one car with an id",
+        "operationId": "getCarById",
+        "parameters": [
+          {
+            "name": "carId",
+            "in": "path",
+            "description": "ID of car to return",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "operation success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "OK"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "get user data success"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Car_return_with_FK"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "operation failed - unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API_respon"
+                },
+                "example": {
+                  "status": "FAIL",
+                  "message": "Failed to access: unauthorized"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "operation failed - not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API_respon"
+                },
+                "example": {
+                  "status": "FAIL",
+                  "message": "Failed to get car information: car not found"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer_auth": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "cars"
+        ],
+        "summary": "update car by id",
+        "description": "update data of one car with an id",
+        "operationId": "updateCarById",
+        "parameters": [
+          {
+            "name": "carId",
+            "in": "path",
+            "description": "ID of car to return",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "data to create new car",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Car_input"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "operation success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "OK"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "get user data success"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Car_return"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "operation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API_respon"
+                },
+                "examples": {
+                  "empty data": {
+                    "value": {
+                      "status": "FAIL",
+                      "message": "Failed to create new user : ${data} cant be empty"
+                    }
+                  },
+                  "wrong car type": {
+                    "value": {
+                      "status": "FAIL",
+                      "message": "Failed to created new car : car type must be either small, medium, or large"
+                    }
+                  },
+                  "not number data": {
+                    "value": {
+                      "status": "FAIL",
+                      "message": "Failed to created new car : ${data} can be only numbers"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "operation failed - unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API_respon"
+                },
+                "example": {
+                  "status": "FAIL",
+                  "message": "Failed to access: unauthorized"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "operation failed - forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API_respon"
+                },
+                "example": {
+                  "status": "FAIL",
+                  "message": "Failed to access: forbidden"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "operation failed - not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API_respon"
+                },
+                "example": {
+                  "status": "FAIL",
+                  "message": "Failed to get car information: car not found"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer_auth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "cars"
+        ],
+        "summary": "delete car by id",
+        "description": "delete data of one car with an id",
+        "operationId": "deleteCarById",
+        "parameters": [
+          {
+            "name": "carId",
+            "in": "path",
+            "description": "ID of car to return",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "operation success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "OK"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "get user data success"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Car_return"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "operation failed - unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API_respon"
+                },
+                "example": {
+                  "status": "FAIL",
+                  "message": "Failed to access: unauthorized"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "operation failed - forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API_respon"
+                },
+                "example": {
+                  "status": "FAIL",
+                  "message": "Failed to access: forbidden"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "operation failed - not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/API_respon"
+                },
+                "example": {
+                  "status": "FAIL",
+                  "message": "Failed to get car information: car not found"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer_auth": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Car_input": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Ford F150"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "small",
+              "medium",
+              "large"
+            ],
+            "example": "small"
+          },
+          "image": {
+            "type": "string",
+            "format": "url",
+            "example": "./images/car01.min.jpg"
+          },
+          "capacity": {
+            "type": "number",
+            "example": 2
+          },
+          "rentPerDay": {
+            "type": "number",
+            "example": 20000
+          },
+          "description": {
+            "type": "string",
+            "example": "Brake assist. Leather-wrapped shift knob. Glove box lamp. Air conditioning w/in-cabin microfilter."
+          },
+          "availableAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2022-03-23T15:49:05.563Z"
+          }
+        },
+        "required": [
+          "name",
+          "type",
+          "image",
+          "capacity",
+          "rentPerDay",
+          "availableAt"
+        ]
+      },
+      "Car_return": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "5dbbf4b9-ff96-477a-a542-e33c866d6332\""
+          },
+          "name": {
+            "type": "string",
+            "example": "Ford F150"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "small",
+              "medium",
+              "large"
+            ],
+            "example": "small"
+          },
+          "image": {
+            "type": "string",
+            "format": "url",
+            "example": "./images/car01.min.jpg"
+          },
+          "capacity": {
+            "type": "number",
+            "example": 2
+          },
+          "rentPerDay": {
+            "type": "number",
+            "example": 20000
+          },
+          "description": {
+            "type": "string",
+            "example": "Brake assist. Leather-wrapped shift knob. Glove box lamp. Air conditioning w/in-cabin microfilter."
+          },
+          "availableAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2022-03-23T15:49:05.563Z"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2022-03-23T15:49:05.563Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "example": "2022-03-23T15:49:05.563Z"
+          },
+          "deletedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "example": "2022-03-23T15:49:05.563Z"
+          },
+          "createdBy": {
+            "type": "string",
+            "format": "uuid",
+            "example": "5dbbf4b9-ff96-477a-a542-e33c866d6332\""
+          },
+          "updatedBy": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true,
+            "example": "5dbbf4b9-ff96-477a-a542-e33c866d6332\""
+          },
+          "deletedBy": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true,
+            "example": "5dbbf4b9-ff96-477a-a542-e33c866d6332\""
+          }
+        }
+      },
+      "List_cars_return": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "format": "uuid",
+              "example": "5dbbf4b9-ff96-477a-a542-e33c866d6332\""
+            },
+            "name": {
+              "type": "string",
+              "example": "Ford F150"
+            },
+            "type": {
+              "type": "string",
+              "enum": [
+                "small",
+                "medium",
+                "large"
+              ],
+              "example": "small"
+            },
+            "image": {
+              "type": "string",
+              "format": "url",
+              "example": "./images/car01.min.jpg"
+            },
+            "capacity": {
+              "type": "number",
+              "example": 2
+            },
+            "rentPerDay": {
+              "type": "number",
+              "example": 20000
+            },
+            "description": {
+              "type": "string",
+              "example": "Brake assist. Leather-wrapped shift knob. Glove box lamp. Air conditioning w/in-cabin microfilter."
+            },
+            "availableAt": {
+              "type": "string",
+              "format": "date-time",
+              "example": "2022-03-23T15:49:05.563Z"
+            }
+          }
+        }
+      },
+      "Car_return_with_FK": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "5dbbf4b9-ff96-477a-a542-e33c866d6332\""
+          },
+          "name": {
+            "type": "string",
+            "example": "Ford F150"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "small",
+              "medium",
+              "large"
+            ],
+            "example": "small"
+          },
+          "image": {
+            "type": "string",
+            "format": "url",
+            "example": "./images/car01.min.jpg"
+          },
+          "capacity": {
+            "type": "number",
+            "example": 2
+          },
+          "rentPerDay": {
+            "type": "number",
+            "example": 20000
+          },
+          "description": {
+            "type": "string",
+            "example": "Brake assist. Leather-wrapped shift knob. Glove box lamp. Air conditioning w/in-cabin microfilter."
+          },
+          "availableAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2022-03-23T15:49:05.563Z"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2022-03-23T15:49:05.563Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "example": "2022-03-23T15:49:05.563Z"
+          },
+          "deletedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "example": "2022-03-23T15:49:05.563Z"
+          },
+          "created": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid",
+                "example": "a2d791f6-d79f-4fdf-ac36-55eb5db24202"
+              },
+              "name": {
+                "type": "string",
+                "example": "admin1"
+              },
+              "email": {
+                "type": "string",
+                "format": "email",
+                "example": "admin1@mail.com"
+              },
+              "role": {
+                "type": "string",
+                "enum": [
+                  "admin",
+                  "superadmin"
+                ],
+                "example": "admin"
+              }
+            }
+          },
+          "cupdated": {
+            "type": "object",
+            "nullable": true,
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid",
+                "example": "a2d791f6-d79f-4fdf-ac36-55eb5db24202"
+              },
+              "name": {
+                "type": "string",
+                "example": "admin1"
+              },
+              "email": {
+                "type": "string",
+                "format": "email",
+                "example": "admin1@mail.com"
+              },
+              "role": {
+                "type": "string",
+                "enum": [
+                  "admin",
+                  "superadmin"
+                ],
+                "example": "admin"
+              }
+            }
+          },
+          "deleted": {
+            "type": "object",
+            "nullable": true,
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid",
+                "example": "a2d791f6-d79f-4fdf-ac36-55eb5db24202"
+              },
+              "name": {
+                "type": "string",
+                "example": "admin1"
+              },
+              "email": {
+                "type": "string",
+                "format": "email",
+                "example": "admin1@mail.com"
+              },
+              "role": {
+                "type": "string",
+                "enum": [
+                  "admin",
+                  "superadmin"
+                ],
+                "example": "admin"
+              }
+            }
+          }
+        }
+      },
+      "User_with_token": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "aa1e00f4-73c5-4e4f-93fc-ff7480704c1a"
+          },
+          "name": {
+            "type": "string",
+            "example": "user1"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "user1@mail.com"
+          },
+          "encryptedPassword": {
+            "type": "string",
+            "example": "$2b$07$wZLHfx3g6wKWWL1GJXPt4.HqZSasIPj5m.0rj8iXyQY03kO2AKcFi"
+          },
+          "phone": {
+            "type": "string",
+            "example": 85088088088
+          },
+          "addres": {
+            "type": "string",
+            "example": "kediri"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "member",
+              "admin",
+              "superadmin"
+            ],
+            "example": "member"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2022-03-23T15:49:05.563Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "example": "2022-03-23T15:49:05.563Z"
+          },
+          "token": {
+            "type": "string",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImVlNTMzMTllLWJiZjEtNGMwNy05OTcyLWExNDExYzVhMTE0ZSIsImlhdCI6MTY5Nzk4MjA3MSwiZXhwIjoxNjk4MDY4NDcxfQ.SjFTRjRCtdiLY9t-6cFdKh7VrLsz57YtSzy8w2q6pTA"
+          }
+        }
+      },
+      "API_respon": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "OK",
+              "FAIL"
+            ]
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "nullable": true
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearer_auth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}
