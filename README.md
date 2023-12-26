@@ -1,4 +1,4 @@
-# challenge 5
+# Car Rest API
 simple car rest api with authentication and connect to database
 
 ### tech stack
@@ -49,12 +49,12 @@ npx sequelize db:migrate
 
 - run super admin seeder
 ```shell
-npx sequelize db:seed --name 20231019170323-generate-superAdmin.js
+npx sequelize db:seed --seed 20231019170323-generate-superAdmin.js
 ```
 
 - run car seeder
 ```shell
-npx sequelize db:seed --name 20231015172414-carsData.js
+npx sequelize db:seed --seed 20231015172414-carsData.js
 ```
 
 - start server
